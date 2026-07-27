@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Any
+from typing import Annotated
 
 import uvicorn
 from authorization import authx
@@ -14,7 +14,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-
 class Task(BaseModel):
     task: str 
     deadline: datetime | None
@@ -25,7 +24,7 @@ app.include_router(auth)
 async def add_tasks(
     main: Task,
     db: Annotated[Session, Depends(get_db)],
-    payload: Annotated[Any, Depends(authx.access_token_required)],
+    payload: Annotated[Session, Depends(authx.access_token_required)],
 ):
     username = payload.sub
     user = db.query(Users).filter(Users.username == username).first()
@@ -41,7 +40,7 @@ async def add_tasks(
 @app.get("/read_tasks_deadline")
 async def read_tasks(
     db: Annotated[Session, Depends(get_db)],
-    payload: Annotated[Any, Depends(authx.access_token_required)],
+    payload: Annotated[Session, Depends(authx.access_token_required)],
 ):
     username = payload.sub
     user = db.query(Users).filter(Users.username == username).first()
@@ -55,7 +54,7 @@ async def read_tasks(
 async def delete_tasks(
     user_id: int,
     db: Annotated[Session, Depends(get_db)],
-    payload: Annotated[Any, Depends(authx.access_token_required)],
+    payload: Annotated [Session, Depends(authx.access_token_required)],
 ):
     username = payload.sub
     user = db.query(Users).filter(Users.username == username).first()

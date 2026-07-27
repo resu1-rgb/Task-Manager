@@ -8,7 +8,6 @@ from sqlalchemy.sql import func
 
 router = APIRouter()
 
-
 class Users(Base):
     __tablename__ = "users"
 

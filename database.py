@@ -1,7 +1,9 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+import os
 
-url_database = 'postgresql://resul@localhost/mydb'
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+url_database = os.getenv('DATABASE_URL', 'postgresql://resul:password@localhost/mydb')
 
 engine = create_engine(url_database, echo=True)
 Session = sessionmaker(autoflush=False, autocommit=False, bind=engine)
