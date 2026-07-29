@@ -7,6 +7,7 @@ from models import Users
 from pwdlib import PasswordHash
 from schemas import LoginUser, RegisterUser
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 password_hash = PasswordHash.recommended()
 router = APIRouter()
@@ -30,8 +31,13 @@ async def register(
         hash_password=password_hash.hash(user.password),
     )
     db.add(db_user)
-    db.commit()
-    return {"Database Added"}
+
+    try:
+        db.commit()
+        return {"message": "User registered successfully"}
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Email or username already exists")
 
 
 @router.post("/login")
