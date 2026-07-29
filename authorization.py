@@ -5,7 +5,7 @@ from database import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from models import Users
 from pwdlib import PasswordHash
-from pydantic import BaseModel, EmailStr, Field
+from schemas import LoginUser, RegisterUser
 from sqlalchemy.orm import Session
 
 password_hash = PasswordHash.recommended()
@@ -18,15 +18,10 @@ config = AuthXConfig(
 )
 
 authx = AuthX(config=config)
-class UsersLoginScheme(BaseModel):
-    email: EmailStr
-    username: str
-    password: str = Field(min_length=8)
-
 
 @router.post("/register")
 async def register(
-    user: UsersLoginScheme,
+    user: RegisterUser,
     db: Annotated[Session, Depends(get_db)],
 ):
     db_user = Users(
@@ -41,7 +36,7 @@ async def register(
 
 @router.post("/login")
 async def login(
-    user: UsersLoginScheme,
+    user: LoginUser,
     db: Annotated[Session, Depends(get_db)],
 ):
     db_user = (
