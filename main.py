@@ -26,8 +26,8 @@ async def add_tasks(
     db: Annotated[Session, Depends(get_db)],
     payload: Annotated[Session, Depends(authx.access_token_required)],
 ):
-    username = payload.sub
-    user = db.query(Users).filter(Users.username == username).first()
+    user_id = int(payload.sub)
+    user = db.query(Users).filter(Users.id == user_id).first()
     deadline_str = main.deadline.strftime("%d-%m-%Y %H:%M") if main.deadline else None
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -42,24 +42,24 @@ async def read_tasks(
     db: Annotated[Session, Depends(get_db)],
     payload: Annotated[Session, Depends(authx.access_token_required)],
 ):
-    username = payload.sub
-    user = db.query(Users).filter(Users.username == username).first()
+    user_id = int(payload.sub)
+    user = db.query(Users).filter(Users.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    currnet_tasks = db.query(Tasks).filter(Tasks.user_id == user.id).all()
-    return currnet_tasks
+    current_tasks = db.query(Tasks).filter(Tasks.user_id == user.id).all()
+    return current_tasks
 
 
-@app.delete("/del_tasks/{user_id}")
+@app.delete("/del_tasks/{task_id}")
 async def delete_tasks(
-    user_id: int,
+    task_id: int,
     db: Annotated[Session, Depends(get_db)],
     payload: Annotated [Session, Depends(authx.access_token_required)],
 ):
-    username = payload.sub
-    user = db.query(Users).filter(Users.username == username).first()
+    user_id = int(payload.sub)
+    user = db.query(Users).filter(Users.id == user_id).first()
     if user:
-        del_tasks = db.query(Tasks).filter(Tasks.id == user_id).first()
+        del_tasks = db.query(Tasks).filter(Tasks.id == task_id, Tasks.user_id == user.id).first()
         if not del_tasks:
             raise HTTPException(status_code=404, detail="Not found")
         db.delete(del_tasks)
