@@ -1,5 +1,10 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, Field
 
+class Task(BaseModel):
+    task: str 
+    deadline: datetime | None
 
 class RegisterUser(BaseModel):
     email: EmailStr 
