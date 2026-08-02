@@ -25,3 +25,4 @@ class Tasks(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     deadline: Mapped[str | None] = mapped_column(nullable=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    is_done: Mapped[bool] = mapped_column(server_default='False')

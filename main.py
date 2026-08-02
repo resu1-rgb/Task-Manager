@@ -7,16 +7,12 @@ from authorization import router as auth
 from database import Base, engine, get_db
 from fastapi import Depends, FastAPI, HTTPException
 from models import Tasks, Users
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from schemas import Task
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-class Task(BaseModel):
-    task: str 
-    deadline: datetime | None
 
 app.include_router(auth)
 
