@@ -33,7 +33,7 @@ async def add_tasks(
     return {"message": "Task added"}
 
 
-@app.get("/read_tasks_deadline")
+@app.get("/read_tasks")
 async def read_tasks(
     db: Annotated[Session, Depends(get_db)],
     payload: Annotated[Session, Depends(authx.access_token_required)],
@@ -63,6 +63,20 @@ async def delete_tasks(
         return {"message": "Task deleted"}
     raise HTTPException(status_code=404, detail="User not found")
 
+@app.get('/read_tasks/{task_id}')
+async def read_tasks(
+    task_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    payload: Annotated [Session, Depends(authx.access_token_required)],
+):
+    user_id = int(payload.sub)
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if user:
+        get_id = db.query(Tasks).filter(Tasks.id == task_id, Tasks.user_id == user.id).first()
+        if not get_id:
+          raise HTTPException(status_code=404, detail="Not found")
+        return {'message': get_id}
+    raise HTTPException(status_code=404, detail="User not found")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", port=8000, log_level="info", reload=True)
