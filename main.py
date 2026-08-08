@@ -77,10 +77,6 @@ async def read_tasks(
         return {'message': get_id}
     raise HTTPException(status_code=404, detail="User not found")
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", port=8000, log_level="info", reload=True)
-
-
 @app.get('/task_search')
 async def task_search(
     q: str, 
@@ -92,3 +88,19 @@ async def task_search(
     if user:
         result = db.query(Tasks).filter(Tasks.task.ilike(f"%{q}%"), Tasks.user_id == user.id).all()
         return result
+    raise HTTPException(status_code=404, detail='Task not found')
+
+@app.get('/task_sort')
+async def task_sort(
+    db: Annotated[Session, Depends(get_db)],
+    payload: Annotated [Session, Depends(authx.access_token_required)]
+):
+    user_id = int(payload.sub)
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if user:
+        result = db.query(Tasks).filter(Tasks.user_id == user.id).order_by(Tasks.created_at).all()
+        return result
+    raise HTTPException(status_code=404, detail="User not found")
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", port=8000, log_level="info", reload=True)
