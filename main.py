@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Annotated
 
 import uvicorn
@@ -67,7 +66,7 @@ async def delete_tasks(
 async def read_tasks(
     task_id: int,
     db: Annotated[Session, Depends(get_db)],
-    payload: Annotated [Session, Depends(authx.access_token_required)],
+    payload: Annotated [Session, Depends(authx.access_token_required)]
 ):
     user_id = int(payload.sub)
     user = db.query(Users).filter(Users.id == user_id).first()
@@ -80,3 +79,16 @@ async def read_tasks(
 
 if __name__ == "__main__":
     uvicorn.run("main:app", port=8000, log_level="info", reload=True)
+
+
+@app.get('/task_search')
+async def task_search(
+    q: str, 
+    db: Annotated[Session, Depends(get_db)],
+    payload: Annotated [Session, Depends(authx.access_token_required)]
+):
+    user_id = int(payload.sub)
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if user:
+        result = db.query(Tasks).filter(Tasks.task.ilike(f"%{q}%"), Tasks.user_id == user.id).all()
+        return result
