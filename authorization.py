@@ -1,4 +1,5 @@
 from typing import Annotated
+import os
 
 from authx import AuthX, AuthXConfig
 from database import get_db
@@ -13,7 +14,7 @@ password_hash = PasswordHash.recommended()
 router = APIRouter()
 
 config = AuthXConfig(
-    JWT_SECRET_KEY="secret_key_very_long_and_secure_for_testing_only",
+    JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY"),
     JWT_TOKEN_LOCATION=["headers"],
     JWT_ACCESS_COOKIE_NAME="my_accsess_token",
 )
