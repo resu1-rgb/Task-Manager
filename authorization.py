@@ -16,7 +16,6 @@ router = APIRouter()
 config = AuthXConfig(
     JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY"),
     JWT_TOKEN_LOCATION=["headers"],
-    JWT_ACCESS_COOKIE_NAME="my_accsess_token",
 )
 
 authx = AuthX(config=config)

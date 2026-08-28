@@ -1,12 +1,10 @@
 from datetime import datetime
 
 from database import Base
-from fastapi import APIRouter
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
-router = APIRouter()
 
 class Users(Base):
     __tablename__ = "users"
@@ -23,6 +21,6 @@ class Tasks(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     task: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
-    deadline: Mapped[str | None] = mapped_column(nullable=True)
+    deadline: Mapped[datetime | None] = mapped_column(nullable=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    is_done: Mapped[bool] = mapped_column(server_default='False')
+    is_done: Mapped[bool] = mapped_column(default=False)
