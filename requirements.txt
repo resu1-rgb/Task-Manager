@@ -60,4 +60,3 @@ uvloop==0.22.1
 watchfiles==1.2.0
 websockets==16.0
 pwdlib[argon2]==0.3.0
-dotenv==1.2.2
