@@ -1,17 +1,17 @@
 # Task Manager
 
-REST API для управления задачами с JWT авторизацией.
+REST API for task management with JWT authentication.
 
-## Стек
+## Stack
 
-- **FastAPI** — веб фреймворк
-- **PostgreSQL** — база данных
+- **FastAPI** — web framework
+- **PostgreSQL** — database
 - **SQLAlchemy** — ORM
-- **Alembic** — миграции
-- **AuthX** — JWT авторизация
-- **Docker** — контейнеризация
+- **Alembic** — migrations
+- **AuthX** — JWT authentication
+- **Docker** — containerization
 
-## Запуск через Docker
+## Run with Docker
 
 ```bash
 git clone https://github.com/resu1-rgb/pet_project.git
@@ -19,63 +19,63 @@ cd pet_project
 docker compose up --build
 ```
 
-API будет доступен на `http://localhost:8000`
+API available at `http://localhost:8000`
 
-Документация: `http://localhost:8000/docs`
+Documentation: `http://localhost:8000/docs`
 
-## Запуск локально
+## Run locally
 
-**1. Создай виртуальное окружение**
+**1. Create virtual environment**
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-**2. Установи зависимости**
+**2. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-**3. Создай `.env` файл**
+**3. Create `.env` file**
 ```env
 DATABASE_URL=postgresql://user:password@localhost:5432/mydb
 JWT_SECRET_KEY=your_secret_key
 ```
 
-**4. Примени миграции**
+**4. Apply migrations**
 ```bash
 alembic upgrade head
 ```
 
-**5. Запусти сервер**
+**5. Start server**
 ```bash
 uvicorn main:app --reload
 ```
 
-## Эндпоинты
+## Endpoints
 
-### Авторизация
-| Метод | URL | Описание |
-|-------|-----|----------|
-| POST | `/register` | Регистрация |
-| POST | `/login` | Логин, возвращает JWT токен |
+### Auth
+| Method | URL | Description |
+|--------|-----|-------------|
+| POST | `/register` | Register a new user |
+| POST | `/login` | Login, returns JWT token |
 
-### Задачи
-| Метод | URL | Описание |
-|-------|-----|----------|
-| POST | `/add_tasks` | Создать задачу |
-| GET | `/read_tasks` | Все задачи |
-| GET | `/read_tasks/{id}` | Задача по ID |
-| PATCH | `/tasks/{id}` | Редактировать задачу |
-| PATCH | `/tasks/{id}/done` | Отметить выполненной/невыполненной |
-| DELETE | `/del_tasks/{id}` | Удалить задачу |
-| GET | `/task_search?q=текст` | Поиск по тексту |
-| GET | `/task_sort` | Задачи отсортированные по дате |
+### Tasks
+| Method | URL | Description |
+|--------|-----|-------------|
+| POST | `/add_tasks` | Create a task |
+| GET | `/read_tasks` | List all tasks |
+| GET | `/read_tasks/{id}` | Task by ID |
+| PATCH | `/tasks/{id}` | Update task text or deadline |
+| PATCH | `/tasks/{id}/done` | Toggle task done/undone |
+| DELETE | `/del_tasks/{id}` | Delete a task |
+| GET | `/task_search?q=text` | Search tasks by text |
+| GET | `/task_sort` | Tasks sorted by creation date |
 
-## Тесты
+## Tests
 
 ```bash
 pytest test_main.py -v
 ```
 
-15 тестов покрывают: регистрацию, логин, создание/чтение/редактирование/удаление задач, поиск и сортировку.
+15 tests covering: registration, login, create/read/update/delete tasks, search and sort.
